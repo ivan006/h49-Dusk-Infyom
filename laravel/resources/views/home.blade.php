@@ -15,9 +15,14 @@
                     @endif
 
                     You are logged in!
+                    <span id="test"></span>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<script type="text/javascript">
+	setTimeout(() => { document.getElementById('test').innerHTML = 'JS generated text';}, 2000);
+</script>
 @endsection

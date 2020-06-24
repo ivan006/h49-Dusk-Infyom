@@ -11,7 +11,7 @@ class RegisterTest extends DuskTestCase
   use DatabaseMigrations;
     /**
      * A Dusk test example.
-     *
+     * @test
      * @return void
      */
     public function a_user_can_register()
@@ -24,7 +24,9 @@ class RegisterTest extends DuskTestCase
           ->type('password', 'secret123')
           ->type('password_confirmation', 'secret123')
           ->press('Register')
-          ->assertPathIs('/home');
+          ->assertPathIs('/home')
+          ->waitForText('JS generated text')
+          ->assertSee('JS generated text');
         });
     }
 }
