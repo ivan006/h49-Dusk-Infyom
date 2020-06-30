@@ -30,7 +30,7 @@ class duskCrawlerTest extends DuskTestCase
 
     public function setUp(): void{
         parent::setUp();
-        $this->artisan('migrate:fresh');
+        // $this->artisan('migrate:fresh');
     }
 
     /** @test */
