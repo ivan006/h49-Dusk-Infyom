@@ -24,8 +24,8 @@ class duskCrawlerTest extends DuskTestCase
     //     });
     // }
 
-    protected static $domain = 'hangar49.com';
-    protected static $startUrl = 'https://hangar49.com/';
+    protected static $domain = 'beta.companieshouse.gov.uk';
+    protected static $startUrl = 'https://beta.companieshouse.gov.uk';
 
 
     public function setUp(): void{
