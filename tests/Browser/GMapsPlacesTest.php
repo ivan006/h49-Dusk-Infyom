@@ -24,15 +24,19 @@ class GMapsPlacesTest extends DuskTestCase
     //     });
     // }
 
-    protected static $domain = 'bluegemify.co.za';
-    protected static $startUrl = 'https://bluegemify.co.za/';
+    // Specify the $startUrl and $domain as per the website you are trying to crawl.
 
+    // protected static $query_term = '';
+    protected static $domain = 'maps.googleapis.com';
+    protected static $startUrl = 'https://maps.googleapis.com/maps/api/place/textsearch/json?query=restaurants+in+Sydney&key=AIzaSyAc1SKyytc5h_1-qd0R-Emsa17iNQIIzZs';
 
+    // setUp method is used to refresh the database on each test run.
     public function setUp(): void{
         parent::setUp();
         // $this->artisan('migrate:fresh');
     }
 
+    // I start the crawling insude urlSpider test method, which then calls the getLinks method.
     /** @test */
     public function urlSpider()
     {
@@ -43,10 +47,17 @@ class GMapsPlacesTest extends DuskTestCase
         ]);
 
         $this->browse(function (Browser $browser) use ($startingLink) {
-            $this->getLinks($browser, $startingLink);
+            $this
+            // ->getLinks($browser, $startingLink)
+            // ->assertJson([
+            //   'created' => true,
+            // ])
+            ->assertJsonCount(4, $key = null)
+            ;
         });
     }
 
+    // getLinks recursively process the url, fetches all the links on current page and adds them to database table.
     protected function getLinks(Browser $browser, $currentUrl){
 
         $this->processCurrentUrl($browser, $currentUrl);
@@ -94,7 +105,7 @@ class GMapsPlacesTest extends DuskTestCase
         $currentUrl->save();
     }
 
-
+    // isValidUrl , trimUrl are helper methods to check if the link is valid.
     protected function isValidUrl($url){
         $parsed_url = parse_url($url);
 
@@ -112,6 +123,7 @@ class GMapsPlacesTest extends DuskTestCase
         return $url;
     }
 
+    // Since dusk does not return Http status codes, we make use of get_headers php function to fetch those inside getHttpStatus method.
     protected function getHttpStatus($url){
         $headers = get_headers($url, 1);
         return intval(substr($headers[0], 9, 3));
