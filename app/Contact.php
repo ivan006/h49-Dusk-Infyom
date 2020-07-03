@@ -43,12 +43,16 @@ class Contact extends Model
         // "username" => $apikey,
         // "password" => "X",
       );
-      $endpoint = 'https://maps.googleapis.com/maps/api/place/textsearch/json?query=restaurants+in+Sydney&key='.$apikey;
+      // $endpoint = 'https://maps.googleapis.com/maps/api/place/textsearch/json?key='.$apikey.'&query=restaurants+in+Sydney';
+      $current_tile = "-33.92,18.515";
+      $industry = "Software+company";
+      $endpoint = 'https://maps.googleapis.com/maps/api/place/textsearch/json?inputtype=textquery&key='.$apikey.'&query='.$industry.'&location='.$current_tile.'&radius=500';
+      echo $endpoint;
 
       $response = $contact_object->curl_get($endpoint,$userpwd);
+      $response = json_decode($response, true);
 
-
-      return $response;
+      dd($response);
 
       // return 123;
     }
