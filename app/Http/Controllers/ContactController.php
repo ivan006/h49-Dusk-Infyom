@@ -10,7 +10,7 @@ class ContactController extends Controller
 {
   public function index(){
     $contact_object = new Contact;
-    $result = $contact_object->index();
+    $result = $contact_object->urlSpider();
     return $result;
 
   }
