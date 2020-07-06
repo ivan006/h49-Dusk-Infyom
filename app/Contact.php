@@ -16,6 +16,8 @@ class Contact extends Model
       // 'source_status',
       // 'source_isCrawled',
 
+      'source_place_id',
+
       'first_name',
       'last_name',
       'email',
@@ -32,22 +34,20 @@ class Contact extends Model
 
     ];
 
-
     protected static $current_tile = "-33.92,18.515";
-    protected static $industry = "Software+company";
+    protected static $search_phrase = "Software+company";
 
     protected static $apikey = 'AIzaSyAc1SKyytc5h_1-qd0R-Emsa17iNQIIzZs';
     protected static $domain = 'maps.googleapis.com';
-    // protected static $startUrl = 'https://maps.googleapis.com/maps/api/place/textsearch/json?inputtype=textquery&key='.self::$apikey.'&query='.self::$industry.'&location='.self::$current_tile.'&radius=500';
-    protected static $startUrl = 'https://maps.googleapis.com/maps/api/place/textsearch/json?inputtype=textquery&key='.'AIzaSyAc1SKyytc5h_1-qd0R-Emsa17iNQIIzZs'.'&query='."Software+company".'&location='."-33.92,18.515".'&radius=500';
-    // protected static $startUrl = 'https://maps.googleapis.com/maps/api/place/textsearch/json?key=AIzaSyAc1SKyytc5h_1-qd0R-Emsa17iNQIIzZs&pagetoken=CrQCJwEAAF-DKOTOTg03B05Q8Tw72AsGV5y4dhrmtUHbHioe5ors-DMww1txRuq4PRz18xXvbqNjy-rirxxnKStAQzZZ5HJ4MV-FcyHSs4mcEyPtO6VA4_OYHfARfcNKGIIOQDmE4imzHQU6IHG-ZNuHqdH7PHTvsXcXOwqqPxAZG9SVO8hIm-vsnMgJy1alqei5Z_l_rcM8i_ORXIyrRj4WU3UAMGvt0M8h-mf4IjIxrcCVX8Ng6-R5gpV6bvXsonpMvu0A0H90IGSxyArutiXCE7YUvA2wt1qJ0Fk6zE129nGzV-Hgy1kkOuFjX_UFVRkRA41Lq3ZNKuXj3m9PU5LcypBmOG4GdY8XUB2t8ow-mjhirN7UHMRknR0LNMsJy4NIxZvoeHu7_q0WNG21hc0LFXSdo-ESEL6V5eeyjgxNR-CwX1LObmwaFHmIQwfI6vBNP033dGUgEsOc_91a';
+    protected static $startUrl = 'https://maps.googleapis.com/maps/api/place/textsearch/json?key=';
+
 
     /** @test */
     public function urlSpider()
     {
 
 
-      $startUrl = self::$startUrl;
+      $startUrl = self::$startUrl.self::$apikey.'&inputtype=textquery&query='.self::$search_phrase.'&location='.self::$current_tile.'&radius=500';
 
       $startingPage = Page::create([
         'url' => $startUrl,
@@ -87,53 +87,61 @@ class Contact extends Model
 
 
       $contact_object = new Contact;
-      $userpwd = array();
-      sleep(1);
-      $response = $contact_object->curl_get($currentPage->url,$userpwd);
-      $response_json = $response;
-      $response = json_decode($response, true);
 
-      // echo $startUrl;
-      // echo "<br>";
-      // echo $response["next_page_token"];
-      // dd($response);
+      if (1==1) {
+        $userpwd = array();
+        sleep(2);
+        $response = $contact_object->curl_get($currentPage->url,$userpwd);
+        $response_json = $response;
+        $response = json_decode($response, true);
 
-      // $browser->visit($currentPage->url);
+        // echo $startUrl;
+        // echo "<br>";
+        // echo $response["next_page_token"];
+        // dd($response);
 
-      //Get Links and Save to DB if Valid
+        // $browser->visit($currentPage->url);
 
-      $has_next_page = $currentPage->url." ".$response_json;
-      if (isset($response["next_page_token"])) {
-        $href = 'https://maps.googleapis.com/maps/api/place/textsearch/json?key=AIzaSyAc1SKyytc5h_1-qd0R-Emsa17iNQIIzZs&pagetoken='.$response["next_page_token"];
-        $href = $this->trimUrl($href);
-        if($this->isValidUrl($href)){
-          //var_dump($href);
-          Page::create([
-            'url' => $href,
-            'isCrawled' => false,
-          ]);
+        //Get Links and Save to DB if Valid
+
+        $debug_has_next_page = $currentPage->url." ".$response_json;
+        if (isset($response["next_page_token"])) {
+          $href = self::$startUrl.self::$apikey.'&pagetoken='.$response["next_page_token"];
+
+          // $href = 'https://maps.googleapis.com/maps/api/place/textsearch/json?key=AIzaSyAc1SKyytc5h_1-qd0R-Emsa17iNQIIzZs&pagetoken='.$response["next_page_token"];
+          $href = $this->trimUrl($href);
+          if($this->isValidUrl($href)){
+            //var_dump($href);
+            Page::create([
+              'url' => $href,
+              'isCrawled' => false,
+            ]);
+          }
+          $debug_has_next_page = "has next page";
         }
-        $has_next_page = "has next page";
-      }
 
-      //Update current url status to crawled
-      $currentPage->isCrawled = true;
-      $currentPage->status  = $this->getHttpStatus($currentPage->url);
-      // $currentPage->title = $browser->driver->getTitle();
-      $currentPage->title = $has_next_page;
-      $currentPage->save();
-      // if (1==1) {
-      // }
-      // if (1==1) {
-      //   if (isset($response["results"])) {
-      //     foreach ($response["results"] as $key => $value) {
-      //       $contact_object->create([
-      //         'company' => $value["name"],
-      //         'company_industry' => false,
-      //       ]);
-      //     }
-      //   }
-      // }
+        //Update current url status to crawled
+        $currentPage->isCrawled = true;
+        $currentPage->status  = $this->getHttpStatus($currentPage->url);
+        // $currentPage->title = $browser->driver->getTitle();
+        $currentPage->title = $debug_has_next_page;
+        $currentPage->save();
+      }
+      if (1==1) {
+
+        if (isset($response["results"])) {
+          foreach ($response["results"] as $key => $value) {
+            if ($contact_object->where('source_place_id', $value["place_id"])->get()->count() == 0) {
+              $contact_object->create([
+                'company' => $value["name"],
+                'company_industry' => self::$search_phrase,
+                'source_place_id' => $value["place_id"],
+              ]);
+            }
+          }
+        }
+
+      }
     }
 
 
@@ -173,8 +181,8 @@ class Contact extends Model
     //   );
     //   // $endpoint = 'https://maps.googleapis.com/maps/api/place/textsearch/json?key='.$apikey.'&query=restaurants+in+Sydney';
     //   $current_tile = "-33.92,18.515";
-    //   $industry = "Software+company";
-    //   $endpoint = 'https://maps.googleapis.com/maps/api/place/textsearch/json?inputtype=textquery&key='.$apikey.'&query='.$industry.'&location='.$current_tile.'&radius=500';
+    //   $search_phrase = "Software+company";
+    //   $endpoint = 'https://maps.googleapis.com/maps/api/place/textsearch/json?inputtype=textquery&key='.$apikey.'&query='.$search_phrase.'&location='.$current_tile.'&radius=500';
     //   echo $endpoint;
     //
     //   $response = $contact_object->curl_get($endpoint,$userpwd);

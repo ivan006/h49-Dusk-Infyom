@@ -21,6 +21,8 @@ class CreateContactsTable extends Migration
             // $table->unsignedInteger('source_status')->nullable();
             // $table->boolean('source_isCrawled');
 
+            $table->string('source_place_id');
+
             $table->string('first_name')->nullable();
             $table->string('last_name')->nullable();
             $table->string('email')->nullable();
