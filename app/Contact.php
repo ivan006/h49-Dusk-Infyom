@@ -12,9 +12,9 @@ class Contact extends Model
       // 'created_at',
       // 'updated_at',
 
-      'source_url',
-      'source_status',
-      'source_isCrawled',
+      // 'source_url',
+      // 'source_status',
+      // 'source_isCrawled',
 
       'first_name',
       'last_name',
@@ -116,26 +116,24 @@ class Contact extends Model
         $has_next_page = "has next page";
       }
 
-      // $linkElements = $browser->driver->findElements(WebDriverBy::tagName('a'));
-      // foreach($linkElements as $element){
-      //   $href = $element->getAttribute('href');
-      //   $href = $this->trimUrl($href);
-      //   if($this->isValidUrl($href)){
-      //     //var_dump($href);
-      //     Page::create([
-      //     'url' => $href,
-      //     'isCrawled' => false,
-      //     ]);
-      //   }
-      // }
-
-
       //Update current url status to crawled
       $currentPage->isCrawled = true;
       $currentPage->status  = $this->getHttpStatus($currentPage->url);
       // $currentPage->title = $browser->driver->getTitle();
       $currentPage->title = $has_next_page;
       $currentPage->save();
+      // if (1==1) {
+      // }
+      // if (1==1) {
+      //   if (isset($response["results"])) {
+      //     foreach ($response["results"] as $key => $value) {
+      //       $contact_object->create([
+      //         'company' => $value["name"],
+      //         'company_industry' => false,
+      //       ]);
+      //     }
+      //   }
+      // }
     }
 
 
