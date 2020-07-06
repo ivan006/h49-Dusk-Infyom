@@ -17,9 +17,9 @@ class CreateContactsTable extends Migration
             $table->id();
             $table->timestamps();
 
-            $table->string('source_url','1024');
-            $table->unsignedInteger('source_status')->nullable();
-            $table->boolean('source_isCrawled');
+            // $table->string('source_url','1024');
+            // $table->unsignedInteger('source_status')->nullable();
+            // $table->boolean('source_isCrawled');
 
             $table->string('first_name')->nullable();
             $table->string('last_name')->nullable();

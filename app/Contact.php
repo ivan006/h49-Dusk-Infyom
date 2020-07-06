@@ -88,6 +88,7 @@ class Contact extends Model
 
       $contact_object = new Contact;
       $userpwd = array();
+      sleep(1);
       $response = $contact_object->curl_get($currentPage->url,$userpwd);
       $response_json = $response;
       $response = json_decode($response, true);
@@ -101,7 +102,7 @@ class Contact extends Model
 
       //Get Links and Save to DB if Valid
 
-      $has_next_page = $currentPage->url;
+      $has_next_page = $currentPage->url." ".$response_json;
       if (isset($response["next_page_token"])) {
         $href = 'https://maps.googleapis.com/maps/api/place/textsearch/json?key=AIzaSyAc1SKyytc5h_1-qd0R-Emsa17iNQIIzZs&pagetoken='.$response["next_page_token"];
         $href = $this->trimUrl($href);
