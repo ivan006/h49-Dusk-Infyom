@@ -4,6 +4,8 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Page;
+use App\Search;
+use App\LocationScope;
 
 class Contact extends Model
 {
@@ -34,7 +36,7 @@ class Contact extends Model
 
     ];
 
-    protected static $current_tile = "-33.92,18.515";
+    // protected static $current_tile = "-33.92,18.515";
     protected static $search_phrase = "Software+company";
 
     protected static $apikey = 'AIzaSyAc1SKyytc5h_1-qd0R-Emsa17iNQIIzZs';
@@ -45,9 +47,47 @@ class Contact extends Model
     /** @test */
     public function urlSpider()
     {
+      if (1==1) {
+        //Check if pending
+        $contact_object = new Search;
+        $current_search = $contact_object->all()->first();
+
+        $location_scope_object = new LocationScope;
+        $tiles = $location_scope_object->all()->first()->coords;
+        // $tiles = utf8_encode($tiles);
+        $tiles = json_decode($tiles, true);
+
+        $previous_status_note = $current_search->status_note;
+        // if ($current_search->status_note == null) {
+        //   $previous_status_note  = -1;
+        // }
+
+        $current_status_note = $previous_status_note+1;
+
+        if ($current_search->status_flag !== "pending") {
+          // inactive
+          // pending (note will be previous one done)
+          // processing (note will be current one doing)
+          return;
+        } elseif (!isset($tiles[$current_status_note])) {
+
+          $current_search->status_flag = "inactive";
+          $current_search->status_note = -1;
+          $current_search->save();
+          return;
+        }
+
+        //Update current url status to crawled
+        $current_search->status_flag = "processing";
+        $current_search->status_note = $current_status_note;
+
+        $current_search->save();
+
+        $current_tile = $tiles[$current_status_note];
+      }
 
 
-      $startUrl = self::$startUrl.self::$apikey.'&inputtype=textquery&query='.self::$search_phrase.'&location='.self::$current_tile.'&radius=500';
+      $startUrl = self::$startUrl.self::$apikey.'&inputtype=textquery&query='.self::$search_phrase.'&location='.$current_tile.'&radius=500';
 
       $startingPage = Page::create([
         'url' => $startUrl,
@@ -69,6 +109,14 @@ class Contact extends Model
 
         foreach(Page::where('isCrawled', false)->get() as $link) {
           $this->getLinks($link);
+        }
+
+
+        if (1==1) {
+          $contact_object = new Search;
+          $current_search = $contact_object->all()->first();
+          $current_search->status_flag = "pending";
+          $current_search->save();
         }
 
 

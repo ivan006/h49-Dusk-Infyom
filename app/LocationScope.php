@@ -4,9 +4,9 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class LocationPoint extends Model
+class LocationScope extends Model
 {
   protected $fillable = [
-    'coord',
+    'coords',
   ];
 }

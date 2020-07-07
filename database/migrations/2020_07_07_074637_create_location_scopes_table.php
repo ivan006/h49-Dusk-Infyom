@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateLocationPointsTable extends Migration
+class CreateLocationScopesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,11 @@ class CreateLocationPointsTable extends Migration
      */
     public function up()
     {
-        Schema::create('location_points', function (Blueprint $table) {
+        Schema::create('location_scopes', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
 
-            $table->string('coord');
+            $table->longText('coords');
         });
     }
 
@@ -28,6 +28,6 @@ class CreateLocationPointsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('location_points');
+        Schema::dropIfExists('location_scopes');
     }
 }
