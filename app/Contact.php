@@ -37,7 +37,7 @@ class Contact extends Model
     ];
 
     // protected static $current_tile = "-33.92,18.515";
-    protected static $search_phrase = "Software+company";
+    protected static $search_phrase = "Medical+supply+store";
 
     protected static $apikey = 'AIzaSyAc1SKyytc5h_1-qd0R-Emsa17iNQIIzZs';
     protected static $domain = 'maps.googleapis.com';
@@ -88,7 +88,7 @@ class Contact extends Model
 
 
       $startUrl = self::$startUrl.self::$apikey.'&inputtype=textquery&query='.self::$search_phrase.'&location='.$current_tile.'&radius=500';
-
+      // dd($startUrl);
       $startingPage = Page::create([
         'url' => $startUrl,
         'isCrawled' => false,

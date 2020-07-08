@@ -21,3 +21,4 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/googlemaps', 'ContactController@index');
+Route::get('/locationtool', 'LocationScopeToolSessionController@index');
