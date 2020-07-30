@@ -39,6 +39,6 @@ class scrapegoogle extends Command
     public function handle()
     {
       $contact_object = new Contact;
-      // $contact_object->urlSpider();
+      $contact_object->urlSpider();
     }
 }
